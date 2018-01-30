@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">SING ALONG</string>
+    <string name="appslogan">Weather - SING IT!</string>
+    <string name="font">font/monitalic.ttf</string>
+
+    <string name="facebook_app_id">181301999128140</string>
+    <string-array name="Choices">
+        <item></item>
+        <item>ENGLISH</item>
+        <item>BANGLA</item>
+        <item>DOESNOT MATTER</item>
+    </string-array>
+    <string name="LANGUAGE">LANGUAGE</string>
+
+    <string name="hint"><font style="normal">Email Or Password</font></string>
+</resources>

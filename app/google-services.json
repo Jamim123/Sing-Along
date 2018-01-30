@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "470885137142",
+    "firebase_url": "https://sing-along-e4fa0.firebaseio.com",
+    "project_id": "sing-along-e4fa0",
+    "storage_bucket": "sing-along-e4fa0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:470885137142:android:2ef88ae604d74241",
+        "android_client_info": {
+          "package_name": "com.project1.musicapp.singalong"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "470885137142-9ja38nqv5t92u0vrclqf7m1bo4il0mt6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.project1.musicapp.singalong",
+            "certificate_hash": "9dd43f43bba9f403858f6dc7d752b56f21d4a2ab"
+          }
+        },
+        {
+          "client_id": "470885137142-sqdmmcivtm4hf7dtc9qq8c3itb8pj6d8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDi4w5-aXnp7sVkdIkaCzYI-k7mmbXS-pc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "470885137142-sqdmmcivtm4hf7dtc9qq8c3itb8pj6d8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
