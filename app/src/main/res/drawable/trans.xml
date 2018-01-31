@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <transition xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/heart_outline_white2"/>
-    <item android:drawable="@drawable/heart_red"/>
+    <item android:drawable="@drawable/heartwhite"/>
+    <item android:drawable="@drawable/redheart"/>
 
 
 </transition>

@@ -25,6 +25,8 @@ import android.widget.Toast;
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.request.event.DeezerError;
 import com.deezer.sdk.player.TrackPlayer;
+import com.deezer.sdk.player.event.OnPlayerStateChangeListener;
+import com.deezer.sdk.player.event.PlayerState;
 import com.deezer.sdk.player.exception.TooManyPlayersExceptions;
 import com.deezer.sdk.player.networkcheck.WifiAndMobileNetworkStateChecker;
 import com.google.android.gms.common.ConnectionResult;
@@ -60,11 +62,12 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
     public Thread soundThread;
     public String weather = "rainy";
     public TreeMap<String, SongAction> data;
-    ImageButton playButton, nextButton, previousButton,heartButton,options;
+    ImageButton playButton, nextButton, previousButton, heartButton, options;
     TextView songName, artistName, album, txtView, showtext, t11;
     ImageView backgroundAlbumImage;
-    Button  m1;
+    Button m1;
     ImageView heart;
+    TextView nextSong;
     ProgressBar prog;
     View imm;
     FirebaseAuth mAuth;
@@ -114,10 +117,10 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
             @Override
             public void onClick(View view) {
                 ((TransitionDrawable) heartButton.getDrawable()).startTransition(2000);
+
+
             }
         });
-
-
 
 
         googleApiClient = new GoogleApiClient.Builder(this, this, (GoogleApiClient.OnConnectionFailedListener) this).addApi(LocationServices.API).build();
@@ -132,14 +135,13 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
         previousButton = (ImageButton) findViewById(R.id.prev);
 
 
-
         songSeekBar = (SeekBar) findViewById(R.id.seekBar);
 
-        options=(ImageButton) findViewById(R.id.btnPlaylist);
+        options = (ImageButton) findViewById(R.id.btnPlaylist);
         options.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i=new Intent(Musicplayer.this,Settings.class);
+                Intent i = new Intent(Musicplayer.this, Settings.class);
                 startActivity(i);
             }
         });
@@ -148,6 +150,7 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
         artistName = (TextView) findViewById(R.id.artist);
         album = (TextView) findViewById(R.id.album);
         backgroundAlbumImage = (ImageView) findViewById(R.id.backgroundImage);
+        nextSong = (TextView) findViewById(R.id.nextSongTitle);
 
 
         Intent returnIntent = getIntent();
@@ -258,7 +261,7 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
         Log.i(MainActivity.class.getSimpleName(), "Can't connect to Google Play Services!");
     }
 
-    public void setSong() {
+    public void setSong(boolean startAutomatically) {
         currentSong = data.get(weather);
 
 //        if (mp != null) {
@@ -289,10 +292,81 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
                 songName.setSingleLine(true);
                 artistName.setText(currentSong.getArtist());
                 album.setText(currentSong.getAlbum());
-               // backgroundAlbumImage.setBackground(currentSong.getback());
+                nextSong.setText(currentSong.getNextSongName());
+
+                //int dataa= Integer.parseInt(currentSong.getback());
+                //backgroundAlbumImage.setImageResource(dataa);
 
                 player.playTrack(currentSong.getUrl());
-                player.pause();
+
+                View.OnClickListener blank = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                };
+
+                View.OnClickListener play = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(player==null) setSong(true);
+                        player.seek(currentPosition);
+                        player.play();
+                        playButton.setImageResource(R.drawable.img_btn_pause_pressed);
+                    }
+                };
+
+                View.OnClickListener pause = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        player.pause();
+                        playButton.setImageResource(R.drawable.img_btn_play);
+                        currentPosition = player.getTrackDuration();
+                    }
+                };
+
+                OnPlayerStateChangeListener normalListener = new OnPlayerStateChangeListener() {
+                    @Override
+                    public void onPlayerStateChange(PlayerState playerState, long l) {
+                        if(playerState.equals(PlayerState.WAITING_FOR_DATA)) playButton.setOnClickListener(blank);
+                        if(playerState.equals(PlayerState.STOPPED)) setSong(false);
+                        if(playerState.equals(PlayerState.INITIALIZING)) playButton.setOnClickListener(blank);
+                        if(playerState.equals(PlayerState.PAUSED)) playButton.setOnClickListener(play);
+                        if(playerState.equals(PlayerState.READY)) playButton.setOnClickListener(blank);
+                        if(playerState.equals(PlayerState.PLAYBACK_COMPLETED)) {
+                            if (player != null) player.stop();
+                            currentSong = data.get(weather);
+                            currentSong.Next();
+                            boolean prevstarted = started;
+                            setSong(true);
+
+                            player.playTrack(currentSong.getUrl());
+
+                            if (prevstarted) {
+                                started = true;
+                            } else {
+                                player.pause();
+                                started = false;
+                            }
+                        }
+
+                    }
+                };
+
+                player.addOnPlayerStateChangeListener(new OnPlayerStateChangeListener() {
+                    @Override
+                    public void onPlayerStateChange(PlayerState playerState, long l) {
+                        if(playerState.equals(PlayerState.INITIALIZING)) {
+                            playButton.setOnClickListener(blank);
+                        }
+                        if (playerState.equals(PlayerState.PLAYING)) {
+                            if(startAutomatically==false) player.pause();
+                            //Toast.makeText(Musicplayer.this, "Playing", Toast.LENGTH_LONG).show();
+                            player.addOnPlayerStateChangeListener(normalListener);
+                            player.removeOnPlayerStateChangeListener(this);
+                        }
+                    }
+                });
             }
 
             @Override
@@ -302,37 +376,35 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
         });
 
 
-
     }
 
 
     public void setupListeners() {
-        //Toast.makeText(this, "alfa", Toast.LENGTH_LONG).show();
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (started) {
-                    if (player != null) {
-                        //playButton.setBackgroundResource(R.drawable.img_btn_pause_pressed);
-                        player.pause();
-                        playButton.setImageResource(R.drawable.img_btn_play_pressed);
-                        currentPosition = player.getTrackDuration();
-                        started = false;
-                    }
-                } else {
-                    if (player == null) {
-                        setSong();
-                    }
-                    player.seek(currentPosition);
-                    player.play();
-                    playButton.setImageResource(R.drawable.img_btn_pause_pressed);
-                    started = true;
-                }
-                //Toast.makeText(Musicplayer.this, weather, Toast.LENGTH_LONG).show();
-                //Toast.makeText(Musicplayer.this, currentSong.getUrl().toString(), Toast.LENGTH_LONG).show();
-
-            }
-        });
+//        playButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (started) {
+//                    if (player != null) {
+//                        //playButton.setBackgroundResource(R.drawable.img_btn_pause_pressed);
+//                        player.pause();
+//                        playButton.setImageResource(R.drawable.img_btn_play);
+//                        currentPosition = player.getTrackDuration();
+//                        started = false;
+//                    }
+//                } else {
+//                        if (player == null) {
+//                        setSong(false);
+//                        Toast.makeText(Musicplayer.this, weather, Toast.LENGTH_LONG).show();
+//                        playButton.setImageResource(R.drawable.img_btn_pause_pressed);
+//                        //player.playTrack(currentSong.getUrl());
+//                    }
+//                    player.seek(currentPosition);
+//                    player.play();
+//                    playButton.setImageResource(R.drawable.img_btn_pause_pressed);
+//                    started = true;
+//                }
+//            }
+//        });
 
 
         nextButton.setOnClickListener(new View.OnClickListener() {
@@ -342,7 +414,7 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
                 currentSong = data.get(weather);
                 currentSong.Next();
                 boolean prevstarted = started;
-                setSong();
+                setSong(prevstarted);
 
                 player.playTrack(currentSong.getUrl());
 
@@ -356,15 +428,15 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
         });
 
         previousButton.setOnClickListener(new View.OnClickListener() {
-        @Override
+            @Override
             public void onClick(View v) {
                 if (player != null) player.stop();
-            currentSong = data.get(weather);
-            currentSong.Previous();
+                currentSong = data.get(weather);
+                currentSong.Previous();
                 //data.get(weather).Previous();
                 boolean prevstarted = started;
-                setSong();
-            player.playTrack(currentSong.getUrl());
+                setSong(prevstarted);
+                player.playTrack(currentSong.getUrl());
                 if (prevstarted) {
                     player.pause();
                     started = true;

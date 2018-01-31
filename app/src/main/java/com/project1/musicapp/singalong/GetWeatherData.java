@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.TextView;
 
-import com.deezer.sdk.player.TrackPlayer;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -122,7 +120,7 @@ public class GetWeatherData extends AsyncTask<String, Void, String> {
 
 
 
-        parent.setSong();
+        parent.setSong(false);
         parent.setupListeners();
 
         //Toast.makeText(context, weather, Toast.LENGTH_SHORT).show();

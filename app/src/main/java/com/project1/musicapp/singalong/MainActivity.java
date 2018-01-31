@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private LoginButton loginButton;
     private FirebaseAuth auth;
-    private ProgressBar progressBar;
     private TextView t11;
 
     @Override

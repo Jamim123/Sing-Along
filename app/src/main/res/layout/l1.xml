@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#4a4a4a"
+    android:background="#EB000000"
     tools:context="com.project1.musicapp.singalong.Musicplayer">
 
     <!-- Player Header -->
@@ -32,7 +32,7 @@
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
             android:text="Next:"
-            android:textColor="@color/cast_expanded_controller_background_color"
+            android:textColor="@android:color/white"
             android:textSize="17sp"
             android:textStyle="bold" />
 
@@ -44,7 +44,7 @@
             android:layout_weight="1"
             android:paddingLeft="10dp"
             android:text="The Good, The Bad And The Ugly"
-            android:textColor="@color/cast_intro_overlay_background_color"
+            android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
         "
@@ -172,12 +172,19 @@
             <!-- Play Button -->
 
 
-            <ImageButton
-                android:id="@+id/play"
+            <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:src="@drawable/btn_play" />
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/play"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:src="@drawable/btn_play" />
+
+            </FrameLayout>
 
             <!-- Forward Button -->
 
@@ -256,11 +263,12 @@
 
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:id="@+id/butons"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/timerDisplay"
-        android:gravity="center"
-        android:layout_alignParentStart="true">
+        android:layout_centerInParent="true"
+        android:gravity="center">
 
         <!-- Repeat Button -->
 
@@ -276,13 +284,20 @@
         <!-- Shuffle Button -->
 
 
+        <ImageView
+            android:id="@+id/imageView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.73"
+            app:srcCompat="@drawable/btn_next" />
+
         <ImageButton
             android:id="@+id/btnShare"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="29dp"
             android:layout_marginLeft="5dp"
             android:background="@null"
-            android:src="@drawable/btn_shuffle" />
+            android:src="@drawable/rsz_1homeshare" />
 
     </LinearLayout>
 

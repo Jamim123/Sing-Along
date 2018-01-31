@@ -7,96 +7,106 @@
     android:background="@mipmap/bgg2">
 
 
-    <EditText
-        android:id="@+id/editText3"
+    <TextView
+        android:id="@+id/userName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="18dp"
+        android:background="@drawable/rectangle"
         android:ems="10"
+        android:gravity="center"
         android:hint="  username"
         android:inputType="textPersonName"
-        tools:layout_editor_absoluteX="85dp"
-        tools:layout_editor_absoluteY="111dp" />
+        android:paddingBottom="6dp"
+        android:paddingTop="6dp"
+        android:text="jam"
+        android:textAlignment="center"
+        android:textColorHint="#C8808080"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="@+id/setIcon"
+        app:layout_constraintRight_toRightOf="@+id/setIcon"
+        app:layout_constraintTop_toBottomOf="@+id/setIcon" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/setIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textSize="25dp"
-        android:textColor="@android:color/white"
-        tools:text="Set Icon"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="8dp"
-        app:layout_constraintVertical_bias="0.097"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="467dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintVertical_bias="0.181"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0.914"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" />
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.097"
+        tools:text="Set Icon" />
 
     <GridLayout
         android:layout_width="200dp"
-        android:layout_height="300dp"
+        android:layout_height="350dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="3dp"
         android:columnCount="2"
         android:rowCount="3"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintVertical_bias="0.864"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent">
+        app:layout_constraintVertical_bias="0.864">
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/g2"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="20dp"
+            app:srcCompat="@drawable/g2" />
+
+        <ImageView
+            android:id="@+id/man3"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:srcCompat="@drawable/man3" />
+
+        <ImageView
+            android:id="@+id/man1"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="20dp"
+            app:srcCompat="@drawable/man1"
+            tools:layout_editor_absoluteX="192dp"
+            tools:layout_editor_absoluteY="323dp" />
+
+        <ImageView
+            android:id="@+id/boy"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="left|top"
             app:srcCompat="@drawable/boy" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/girl1"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="left|top"
             app:srcCompat="@drawable/girl1" />
 
         <ImageView
-            android:id="@+id/imageView6"
+            android:id="@+id/girl6"
             android:layout_width="100dp"
             android:layout_height="100dp"
             app:srcCompat="@drawable/girl6" />
     </GridLayout>
-
-    <ImageView
-        android:id="@+id/imageView8"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:srcCompat="@drawable/man1"
-        tools:layout_editor_absoluteX="192dp"
-        tools:layout_editor_absoluteY="323dp" />
 
 </android.support.constraint.ConstraintLayout>
