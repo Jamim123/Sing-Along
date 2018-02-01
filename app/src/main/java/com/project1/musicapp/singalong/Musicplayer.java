@@ -1,13 +1,19 @@
 package com.project1.musicapp.singalong;
 
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.TransitionDrawable;
 import android.location.Location;
+import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -29,9 +35,19 @@ import com.deezer.sdk.player.event.OnPlayerStateChangeListener;
 import com.deezer.sdk.player.event.PlayerState;
 import com.deezer.sdk.player.exception.TooManyPlayersExceptions;
 import com.deezer.sdk.player.networkcheck.WifiAndMobileNetworkStateChecker;
+import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,9 +62,9 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
 
 
     private static final String APPID = "013a7b3018e42daf9e080541c8e9fcb6";
+    private static final int PERMISSION_ACCESS_COARSE_LOCATION = 1;
     private GoogleApiClient googleApiClient;
     public TextView t1;
-    private static final int PERMISSION_ACCESS_COARSE_LOCATION = 1;
 
 
     //from singalong
@@ -78,13 +94,18 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
     TrackPlayer player;
     private String lang;
 
+    OnPlayerStateChangeListener normalListener;
+    View.OnClickListener blank;
+    View.OnClickListener play;
+    View.OnClickListener pause;
+
+    private GoogleApiClient locationApiClient;
     //from singalong
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_musicplayer);
         setContentView(R.layout.l1);
 
 
@@ -92,7 +113,6 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
         txtView.setText(getIntent().getStringExtra("nm"));
         txtView.setVisibility(View.INVISIBLE);
         lang = txtView.getText().toString();
-
         dialog = new ProgressDialog(this);
         dialog.setTitle("Loading weather and song data...");
         dialog.show();
@@ -104,13 +124,6 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
 
 
         t1 = (TextView) findViewById(R.id.weather);
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
-                    PERMISSION_ACCESS_COARSE_LOCATION);
-        }
-
-
         heartButton = (ImageButton) findViewById(R.id.btnLove);
 
         heartButton.setOnClickListener(new View.OnClickListener() {
@@ -191,7 +204,8 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_ACCESS_COARSE_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -261,7 +275,7 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
         Log.i(MainActivity.class.getSimpleName(), "Can't connect to Google Play Services!");
     }
 
-    public void setSong(boolean startAutomatically) {
+    public void setSong(final boolean startAutomatically) {
         currentSong = data.get(weather);
 
 //        if (mp != null) {
@@ -299,24 +313,24 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
 
                 player.playTrack(currentSong.getUrl());
 
-                View.OnClickListener blank = new View.OnClickListener() {
+                blank = new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
                     }
                 };
 
-                View.OnClickListener play = new View.OnClickListener() {
+                play = new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(player==null) setSong(true);
+                        if (player == null) setSong(true);
                         player.seek(currentPosition);
                         player.play();
                         playButton.setImageResource(R.drawable.img_btn_pause_pressed);
                     }
                 };
 
-                View.OnClickListener pause = new View.OnClickListener() {
+                pause = new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         player.pause();
@@ -325,15 +339,19 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
                     }
                 };
 
-                OnPlayerStateChangeListener normalListener = new OnPlayerStateChangeListener() {
+                normalListener = new OnPlayerStateChangeListener() {
                     @Override
                     public void onPlayerStateChange(PlayerState playerState, long l) {
-                        if(playerState.equals(PlayerState.WAITING_FOR_DATA)) playButton.setOnClickListener(blank);
-                        if(playerState.equals(PlayerState.STOPPED)) setSong(false);
-                        if(playerState.equals(PlayerState.INITIALIZING)) playButton.setOnClickListener(blank);
-                        if(playerState.equals(PlayerState.PAUSED)) playButton.setOnClickListener(play);
-                        if(playerState.equals(PlayerState.READY)) playButton.setOnClickListener(blank);
-                        if(playerState.equals(PlayerState.PLAYBACK_COMPLETED)) {
+                        if (playerState.equals(PlayerState.WAITING_FOR_DATA))
+                            playButton.setOnClickListener(blank);
+                        if (playerState.equals(PlayerState.STOPPED)) setSong(false);
+                        if (playerState.equals(PlayerState.INITIALIZING))
+                            playButton.setOnClickListener(blank);
+                        if (playerState.equals(PlayerState.PAUSED))
+                            playButton.setOnClickListener(play);
+                        if (playerState.equals(PlayerState.READY))
+                            playButton.setOnClickListener(blank);
+                        if (playerState.equals(PlayerState.PLAYBACK_COMPLETED)) {
                             if (player != null) player.stop();
                             currentSong = data.get(weather);
                             currentSong.Next();
@@ -356,11 +374,11 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
                 player.addOnPlayerStateChangeListener(new OnPlayerStateChangeListener() {
                     @Override
                     public void onPlayerStateChange(PlayerState playerState, long l) {
-                        if(playerState.equals(PlayerState.INITIALIZING)) {
+                        if (playerState.equals(PlayerState.INITIALIZING)) {
                             playButton.setOnClickListener(blank);
                         }
                         if (playerState.equals(PlayerState.PLAYING)) {
-                            if(startAutomatically==false) player.pause();
+                            if (startAutomatically == false) player.pause();
                             //Toast.makeText(Musicplayer.this, "Playing", Toast.LENGTH_LONG).show();
                             player.addOnPlayerStateChangeListener(normalListener);
                             player.removeOnPlayerStateChangeListener(this);

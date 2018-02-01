@@ -6,7 +6,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.0.1'
         classpath 'com.google.gms:google-services:3.1.0'
        // implementation 'com.github.bumptech.glide:glide:4.5.0'
        // annotationProcessor 'com.github.bumptech.glide:compiler:4.5.0'
