@@ -103,7 +103,7 @@ public class Language extends AppCompatActivity implements GoogleApiClient.Conne
         }
         //////////////////
 
-        t1=(TextView) findViewById(R.id.languagePageHeader);
+        t1=(TextView) findViewById(R.id.languageheader);
 
 
         tf3= Typeface.createFromAsset(getAssets(),"Montserrat-ExtraBold.ttf");

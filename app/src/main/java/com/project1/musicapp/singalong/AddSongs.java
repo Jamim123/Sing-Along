@@ -113,7 +113,7 @@ public class AddSongs extends AppCompatActivity {
         setContentView(R.layout.activity_add_songs);
 
         weather = findViewById(R.id.weather);
-        language = findViewById(R.id.language);
+        language = findViewById(R.id.lang);
         songId = findViewById(R.id.songId);
         songName = findViewById(R.id.songName);
         songArtist = findViewById(R.id.songArtist);

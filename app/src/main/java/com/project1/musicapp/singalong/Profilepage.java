@@ -2,10 +2,6 @@ package com.project1.musicapp.singalong;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -44,7 +40,7 @@ public class Profilepage extends AppCompatActivity {
 
         changeImage = findViewById(R.id.btnChangeImage);
         saveChanges = findViewById(R.id.saveChanges);
-        logout = findViewById(R.id.logOut);
+        //logout = findViewById(R.id.logOut);
 
         propic = findViewById(R.id.propic);
 
@@ -82,14 +78,6 @@ public class Profilepage extends AppCompatActivity {
            }
        });
 
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(Profilepage.this, MainActivity.class));
-                finishAffinity();
-            }
-        });
 
         changeImage.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -35,7 +35,7 @@ public class RegistrationPage extends AppCompatActivity {
     private String Name, n;
     private int p;
 
-    int[] images = {R.drawable.bitstrip_cool, R.drawable.bitstrip_headphone, R.drawable.bitstrip_hijab, R.drawable.bitstrip_mj, R.drawable.bitstrip_phonaholic, R.drawable.bitstrip_sad, R.drawable.bitstrip_salute, R.drawable.bitstrip_yay, R.drawable.bitstrip_lolly};
+
     private ProgressBar progressBar;
     private ProgressBar prog;
 

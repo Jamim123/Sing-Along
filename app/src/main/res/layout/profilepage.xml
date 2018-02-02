@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FF696969"
+    android:background="@drawable/black"
     tools:context="com.project1.musicapp.singalong.Profilepage"
     tools:layout_editor_absoluteY="25dp">
 
@@ -22,8 +22,8 @@
 
         <View
             android:id="@+id/circleBackground"
-            android:layout_width="133dp"
-            android:layout_height="130dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:layout_gravity="center"
             android:background="@drawable/round"
             tools:layout_editor_absoluteX="126dp"
@@ -36,9 +36,11 @@
             android:layout_alignBottom="@+id/circleBackground"
             android:layout_alignEnd="@+id/circleBackground"
             android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:contentDescription="TODO"
             app:srcCompat="@drawable/bitstrip_cool"
             tools:layout_editor_absoluteX="141dp"
-            tools:layout_editor_absoluteY="100dp" android:contentDescription="TODO" />
+            tools:layout_editor_absoluteY="100dp" />
     </FrameLayout>
 
     <LinearLayout
@@ -57,7 +59,7 @@
             android:layout_height="40dp"
             android:layout_alignTop="@+id/email"
             android:layout_toStartOf="@id/emailLogo"
-            app:srcCompat="@drawable/man"
+            app:srcCompat="@drawable/users"
             tools:layout_editor_absoluteX="43dp"
             tools:layout_editor_absoluteY="312dp" />
 
@@ -68,6 +70,7 @@
             android:layout_marginStart="10dp"
             android:background="@drawable/rectangle"
             android:ems="10"
+            android:textColor="#ffffff"
             android:inputType="textPersonName"
             android:paddingLeft="18dp"
             tools:layout_constraintLeft_creator="1"
@@ -95,7 +98,7 @@
             android:layout_height="40dp"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/email"
-            app:srcCompat="@drawable/mail"
+            app:srcCompat="@drawable/mmail"
             tools:layout_editor_absoluteX="43dp"
             tools:layout_editor_absoluteY="373dp" />
 
@@ -108,25 +111,12 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:paddingLeft="18dp"
+            android:paddingTop="7dp"
+            android:text="jdnkkk"
+            android:textColor="#ffffff"
             tools:layout_editor_absoluteX="103dp"
             tools:layout_editor_absoluteY="373dp" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/logOut"
-        android:layout_width="0dp"
-        android:layout_height="36dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/rectanglebutton"
-        android:text="LOGOUT"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayout2"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout2"
-        app:layout_constraintTop_toBottomOf="@+id/saveChanges"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1" />
 
 
     <Button
@@ -136,8 +126,13 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/rectanglebutton"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp"
         android:text="Change Image"
+        android:textColor="#ffffff"
         android:textSize="13dp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/frameLayout"
         app:layout_constraintStart_toStartOf="@+id/frameLayout"
         app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
@@ -147,10 +142,12 @@
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginTop="40dp"
-        android:background="#009688"
+        android:background="@drawable/rectanglebutton"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:text="Save Changes"
+        android:textColor="#ffffff"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/linearLayout2"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/linearLayout2"
