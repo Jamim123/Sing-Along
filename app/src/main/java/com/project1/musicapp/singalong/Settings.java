@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
@@ -35,7 +34,7 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
 
         dropdown = (Spinner) findViewById(R.id.spinner2);
         t1 = (TextView) findViewById(R.id.textView4);
-        Logout=(Button)findViewById(R.id.Logout);
+        Logout=(Button)findViewById(R.id.logOut);
         auth = FirebaseAuth.getInstance();
 
 
@@ -71,8 +70,6 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
     //sign out method
     public void signOut() {
         auth.signOut();
-
-
     }
 
 

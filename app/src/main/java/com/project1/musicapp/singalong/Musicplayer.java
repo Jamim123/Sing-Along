@@ -28,9 +28,11 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.request.event.DeezerError;
 import com.deezer.sdk.player.TrackPlayer;
+import com.deezer.sdk.player.event.OnPlayerProgressListener;
 import com.deezer.sdk.player.event.OnPlayerStateChangeListener;
 import com.deezer.sdk.player.event.PlayerState;
 import com.deezer.sdk.player.exception.TooManyPlayersExceptions;
@@ -92,14 +94,19 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
 
     SongAction currentSong;
     TrackPlayer player;
-    private String lang;
+    String lang;
 
     OnPlayerStateChangeListener normalListener;
+    OnPlayerStateChangeListener initialListener;
     View.OnClickListener blank;
     View.OnClickListener play;
     View.OnClickListener pause;
+    Thread timeShower;
 
-    private GoogleApiClient locationApiClient;
+    TextView timeElapsed, timeRemaining;
+
+    GoogleApiClient locationApiClient;
+    OnPlayerProgressListener progressListener;
     //from singalong
 
 
@@ -113,6 +120,10 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
         txtView.setText(getIntent().getStringExtra("nm"));
         txtView.setVisibility(View.INVISIBLE);
         lang = txtView.getText().toString();
+
+        timeElapsed = findViewById(R.id.songCurrentDurationLabel);
+        timeRemaining = findViewById(R.id.songTotalDurationLabel);
+
         dialog = new ProgressDialog(this);
         dialog.setTitle("Loading weather and song data...");
         dialog.show();
@@ -140,17 +151,17 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
 
 
         nextButton = (ImageButton) findViewById(R.id.forw);
-
-        //TextView t3 = (TextView) findViewById(R.id.textView3);
         playButton = (ImageButton) findViewById(R.id.play);
-
-
         previousButton = (ImageButton) findViewById(R.id.prev);
-
-
         songSeekBar = (SeekBar) findViewById(R.id.seekBar);
-
         options = (ImageButton) findViewById(R.id.btnPlaylist);
+        songName = (TextView) findViewById(R.id.song);
+        artistName = (TextView) findViewById(R.id.artist);
+        album = (TextView) findViewById(R.id.album);
+        backgroundAlbumImage = (ImageView) findViewById(R.id.backgroundImage);
+        nextSong = (TextView) findViewById(R.id.nextSongTitle);
+
+
         options.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -158,12 +169,6 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
                 startActivity(i);
             }
         });
-
-        songName = (TextView) findViewById(R.id.song);
-        artistName = (TextView) findViewById(R.id.artist);
-        album = (TextView) findViewById(R.id.album);
-        backgroundAlbumImage = (ImageView) findViewById(R.id.backgroundImage);
-        nextSong = (TextView) findViewById(R.id.nextSongTitle);
 
 
         Intent returnIntent = getIntent();
@@ -278,122 +283,143 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
     public void setSong(final boolean startAutomatically) {
         currentSong = data.get(weather);
 
-//        if (mp != null) {
-//            mp.stop();
-//        }
-//        mp = MediaPlayer.create(getApplicationContext(), getResources().getIdentifier(currentSong.getUrl(), "raw", getPackageName()));
-//        background.setImageResource(getResources().getIdentifier(currentSong.getback(), "drawable", getPackageName()));
         started = false;
         currentPosition = 0;
 
-        long trackid = 0;
 
-        DatabaseReference dref = FirebaseDatabase.getInstance().getReference();
-        dref.child("Weather").child(weather).child("Songs").child(lang).addValueEventListener(new ValueEventListener() {
+        songName.setText(currentSong.getSongName());
+        songName.setSelected(true);
+        songName.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+        songName.setSingleLine(true);
+
+        artistName.setText(currentSong.getArtist());
+        album.setText(currentSong.getAlbum());
+
+        nextSong.setText(currentSong.getNextSongName());
+        //nextSong.setSelected(true);
+        nextSong.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+        nextSong.setSingleLine(true);
+
+        Glide.with(Musicplayer.this).load(currentSong.getback()).into(backgroundAlbumImage);
+
+        //int dataa= Integer.parseInt(currentSong.getback());
+        //backgroundAlbumImage.setImageResource(dataa);
+
+        player.playTrack(currentSong.getUrl());
+
+        progressListener = new OnPlayerProgressListener() {
+
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    SongSkeleton song = child.child("songData").getValue(SongSkeleton.class);
-                    currentSong.addSong(song);
+            public void onPlayerProgress(long l) {
+                String elapsedMinutes = String.valueOf(l/60000);
+                if(elapsedMinutes.length()==1) elapsedMinutes = "0"+elapsedMinutes;
+
+                String elapsedSeconds = String.valueOf((l/1000)%60);
+                if(elapsedSeconds.length()==1) elapsedSeconds = "0"+elapsedSeconds;
+
+                timeElapsed.setText(elapsedMinutes + ":" + elapsedSeconds);
+
+                long timeLeft = player.getTrackDuration() - l;
+
+                String leftMinutes = String.valueOf(timeLeft/60000);
+                if(leftMinutes.length()==1) leftMinutes = "0"+leftMinutes;
+
+                String leftSeconds = String.valueOf((timeLeft/1000)%60);
+                if(leftSeconds.length()==1) leftSeconds = "0"+leftSeconds;
+
+                timeRemaining.setText(leftMinutes + ":" + leftSeconds);
+            }
+        };
+
+        blank = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        };
+
+        play = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (player == null) setSong(true);
+                player.seek(currentPosition);
+                player.play();
+            }
+        };
+
+        pause = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                player.pause();
+                currentPosition = player.getTrackDuration();
+            }
+        };
+
+        soundThread = new Thread(Musicplayer.this);
+
+        normalListener = new OnPlayerStateChangeListener() {
+            @Override
+            public void onPlayerStateChange(PlayerState playerState, long l) {
+                if (playerState.equals(PlayerState.WAITING_FOR_DATA)) {
+                    playButton.setOnClickListener(play);
+                    playButton.setImageResource(R.drawable.img_btn_play);
+                } else if (playerState.equals(PlayerState.STOPPED)) {
+                    playButton.setOnClickListener(play);
+                    playButton.setImageResource(R.drawable.img_btn_play);
+                } else if (playerState.equals(PlayerState.INITIALIZING)) {
+                    playButton.setOnClickListener(play);
+                    playButton.setImageResource(R.drawable.img_btn_play);
+                } else if (playerState.equals(PlayerState.PAUSED)) {
+                    playButton.setOnClickListener(play);
+                    playButton.setImageResource(R.drawable.img_btn_play);
+                } else if (playerState.equals(PlayerState.READY)) {
+                    playButton.setOnClickListener(play);
+                    playButton.setImageResource(R.drawable.img_btn_play);
+                } else if (playerState.equals(PlayerState.PLAYBACK_COMPLETED)) {
+                    Toast.makeText(Musicplayer.this, "Playback Stopped", Toast.LENGTH_LONG).show();
+
+                    playButton.setImageResource(R.drawable.img_btn_play);
+
+                    try {
+                        player.removeOnPlayerProgressListener(progressListener);
+                        player.removeOnPlayerStateChangeListener(this);
+                        player = new TrackPlayer(getApplication(), deezerConnect, new WifiAndMobileNetworkStateChecker());
+                    } catch (TooManyPlayersExceptions | DeezerError tooManyPlayersExceptions) {
+                        tooManyPlayersExceptions.printStackTrace();
+                    }
+
+                    currentSong = data.get(weather);
+                    currentSong.Next();
+                    player.removeOnPlayerStateChangeListener(normalListener);
+                    setSong(true);
+
+                } else if (playerState.equals(PlayerState.PLAYING)) {
+                    if (!soundThread.isAlive()) soundThread.start();
+                    player.addOnPlayerProgressListener(progressListener);
+                    Toast.makeText(Musicplayer.this, "Playing now...", Toast.LENGTH_LONG).show();
+                    playButton.setOnClickListener(pause);
+                    playButton.setImageResource(R.drawable.img_btn_pause_pressed);
+
                 }
-
-                dialog.cancel();
-                Toast.makeText(Musicplayer.this, String.valueOf(currentSong.getSize()), Toast.LENGTH_LONG).show();
-
-                songName.setText(currentSong.getSongName());
-                songName.setSelected(true);
-                songName.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-                songName.setSingleLine(true);
-                artistName.setText(currentSong.getArtist());
-                album.setText(currentSong.getAlbum());
-                nextSong.setText(currentSong.getNextSongName());
-
-                //int dataa= Integer.parseInt(currentSong.getback());
-                //backgroundAlbumImage.setImageResource(dataa);
-
-                player.playTrack(currentSong.getUrl());
-
-                blank = new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                    }
-                };
-
-                play = new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (player == null) setSong(true);
-                        player.seek(currentPosition);
-                        player.play();
-                        playButton.setImageResource(R.drawable.img_btn_pause_pressed);
-                    }
-                };
-
-                pause = new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        player.pause();
-                        playButton.setImageResource(R.drawable.img_btn_play);
-                        currentPosition = player.getTrackDuration();
-                    }
-                };
-
-                normalListener = new OnPlayerStateChangeListener() {
-                    @Override
-                    public void onPlayerStateChange(PlayerState playerState, long l) {
-                        if (playerState.equals(PlayerState.WAITING_FOR_DATA))
-                            playButton.setOnClickListener(blank);
-                        if (playerState.equals(PlayerState.STOPPED)) setSong(false);
-                        if (playerState.equals(PlayerState.INITIALIZING))
-                            playButton.setOnClickListener(blank);
-                        if (playerState.equals(PlayerState.PAUSED))
-                            playButton.setOnClickListener(play);
-                        if (playerState.equals(PlayerState.READY))
-                            playButton.setOnClickListener(blank);
-                        if (playerState.equals(PlayerState.PLAYBACK_COMPLETED)) {
-                            if (player != null) player.stop();
-                            currentSong = data.get(weather);
-                            currentSong.Next();
-                            boolean prevstarted = started;
-                            setSong(true);
-
-                            player.playTrack(currentSong.getUrl());
-
-                            if (prevstarted) {
-                                started = true;
-                            } else {
-                                player.pause();
-                                started = false;
-                            }
-                        }
-
-                    }
-                };
-
-                player.addOnPlayerStateChangeListener(new OnPlayerStateChangeListener() {
-                    @Override
-                    public void onPlayerStateChange(PlayerState playerState, long l) {
-                        if (playerState.equals(PlayerState.INITIALIZING)) {
-                            playButton.setOnClickListener(blank);
-                        }
-                        if (playerState.equals(PlayerState.PLAYING)) {
-                            if (startAutomatically == false) player.pause();
-                            //Toast.makeText(Musicplayer.this, "Playing", Toast.LENGTH_LONG).show();
-                            player.addOnPlayerStateChangeListener(normalListener);
-                            player.removeOnPlayerStateChangeListener(this);
-                        }
-                    }
-                });
             }
+        };
 
+        initialListener = new OnPlayerStateChangeListener() {
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onPlayerStateChange(PlayerState playerState, long l) {
+                if (playerState.equals(PlayerState.INITIALIZING)) {
+                    playButton.setOnClickListener(blank);
+                } else if (playerState.equals(PlayerState.PLAYING)) {
+                    if (!startAutomatically) player.pause();
+                    else player.play();
+                    //Toast.makeText(Musicplayer.this, "Playing", Toast.LENGTH_LONG).show();
+                    player.addOnPlayerStateChangeListener(normalListener);
+                    player.removeOnPlayerStateChangeListener(initialListener);
+                }
             }
-        });
+        };
 
-
+        player.addOnPlayerStateChangeListener(normalListener);
     }
 
 
@@ -432,6 +458,7 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
                 currentSong = data.get(weather);
                 currentSong.Next();
                 boolean prevstarted = started;
+                player.removeOnPlayerStateChangeListener(normalListener);
                 setSong(prevstarted);
 
                 player.playTrack(currentSong.getUrl());
@@ -453,6 +480,7 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
                 currentSong.Previous();
                 //data.get(weather).Previous();
                 boolean prevstarted = started;
+                player.removeOnPlayerStateChangeListener(normalListener);
                 setSong(prevstarted);
                 player.playTrack(currentSong.getUrl());
                 if (prevstarted) {
@@ -462,43 +490,50 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
             }
         });
 
-//        songSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                if (fromUser) {
-//                    mp.seekTo(progress);
-//                }
-//            }
-//
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//        });
+        songSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    player.seek(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     @Override
     public void run() {
-        int soundTotal = mp.getDuration();
-        songSeekBar.setMax(soundTotal);
+        long soundTotal = player.getTrackDuration();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(Musicplayer.this, String.valueOf(player.getTrackDuration()), Toast.LENGTH_LONG).show();
+            }
+        });
+        songSeekBar.setMax((int) soundTotal);
 
-        while (mp != null && currentPosition < soundTotal) {
-            soundTotal = mp.getDuration();
-            songSeekBar.setMax(soundTotal);
+        while (player != null && currentPosition < soundTotal) {
+            soundTotal = player.getTrackDuration();
+            songSeekBar.setMax((int) soundTotal);
             try {
-                Thread.sleep(300);
-                //currentPosition = mp.getCurrentPosition();
+                Thread.sleep(100);
+                currentPosition = player.getPosition();
+
             } catch (InterruptedException e) {
                 return;
             } catch (Exception e) {
                 return;
             }
-            //songSeekBar.setProgress(currentPosition);
+            songSeekBar.setProgress((int) currentPosition);
         }
     }
 

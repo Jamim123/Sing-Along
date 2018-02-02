@@ -4,6 +4,12 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,8 +33,9 @@ public class GetWeatherData extends AsyncTask<String, Void, String> {
     private TextView textView;
     private Context context;
     private String weather;
+    Musicplayer parent;
 
-    public GetWeatherData(Context context, TextView textView, String weather ) {
+    public GetWeatherData(Context context, TextView textView, String weather) {
         this.context = context;
         this.weather = weather;
         this.textView = textView;
@@ -36,8 +43,7 @@ public class GetWeatherData extends AsyncTask<String, Void, String> {
     }
 
     @Override
-    public void onPreExecute()
-    {
+    public void onPreExecute() {
 
     }
 
@@ -97,35 +103,46 @@ public class GetWeatherData extends AsyncTask<String, Void, String> {
     public void onPostExecute(String temp) {
         if (temp.equals("Haze")
                 || temp.equals("Clear sky")
-                ||temp.equals("light rain"));
-           // temp = "Haze";
+                || temp.equals("light rain"))
+        temp = "Haze";
 
         temp = "Sunny"; //comment this line
 
-        Musicplayer parent = (Musicplayer) context;
+        parent = (Musicplayer) context;
 
+        weather=temp;
         parent.weather = temp;
-
-
 
 
         textView.setText("Current Weather:" + temp);
 
 
-
-
         parent.data = new TreeMap<String, SongAction>();
         SongInfo.collectSongs(parent.data);
+        parent.currentSong = parent.data.get(weather);
 
+        DatabaseReference dref = FirebaseDatabase.getInstance().getReference();
+        dref.child("Weather").child(weather).child("Songs").child(parent.lang).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                parent.currentSong.clear();
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    SongSkeleton song = child.child("songData").getValue(SongSkeleton.class);
+                    parent.currentSong.addSong(song);
+                }
+                parent.setSong(false);
+                parent.setupListeners();
+                parent.dialog.cancel();
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
 
-        parent.setSong(false);
-        parent.setupListeners();
 
         //Toast.makeText(context, weather, Toast.LENGTH_SHORT).show();
-
-
 
 
     }

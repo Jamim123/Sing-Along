@@ -30,6 +30,7 @@ public class Image extends AppCompatActivity {
             public void onClick(View view) {
                 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 FirebaseDatabase.getInstance().getReference().child("users").child(uid).child("propic").setValue(view.getId());
+                finish();
             }
         };
 

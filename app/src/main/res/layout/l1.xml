@@ -28,7 +28,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_weight="1"
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
             android:text="Next:"
@@ -38,15 +37,23 @@
 
         <TextView
             android:id="@+id/nextSongTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_marginTop="10dp"
             android:layout_weight="1"
-            android:paddingLeft="10dp"
+            android:ellipsize="marquee"
+            android:fadingEdge="horizontal"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             android:text="The Good, The Bad And The Ugly"
             android:textColor="@android:color/white"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:singleLine="true" />
         "
         <!-- Playlist button -->
 
@@ -73,14 +80,15 @@
         android:paddingTop="10dp">
 
         <FrameLayout
+            android:id="@+id/frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center">
 
             <ImageView
                 android:id="@+id/backgroundImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
                 android:layout_gravity="center_horizontal"
                 android:src="@drawable/adele" />
 
@@ -254,7 +262,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="right"
-            android:textColor="#04cbde"
+            android:textColor="@android:color/white"
             android:textStyle="bold" />
 
     </LinearLayout>

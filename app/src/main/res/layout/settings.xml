@@ -52,14 +52,14 @@
         android:fontFamily="monospace"
         android:layout_height="wrap_content"
         android:text="LANGUAGE"
-        app:layout_constraintBottom_toTopOf="@+id/Logout"
+        app:layout_constraintBottom_toTopOf="@+id/logOut"
         android:layout_marginLeft="44dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintHorizontal_bias="0.478"
         android:layout_below="@+id/imageView13"
-        android:layout_alignStart="@+id/Logout"
+        android:layout_alignStart="@+id/logOut"
         android:layout_marginStart="44dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="214dp"
@@ -112,7 +112,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <Button
-        android:id="@+id/Logout"
+        android:id="@+id/logOut"
         android:layout_width="100dp"
         android:layout_height="48dp"
         android:layout_marginBottom="34dp"
@@ -142,7 +142,7 @@
         android:layout_marginStart="153dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/Logout"
+        app:layout_constraintBottom_toTopOf="@+id/logOut"
         app:layout_constraintVertical_bias="0.081" />
 
     <ImageView
@@ -171,7 +171,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="33dp"
-        app:layout_constraintBottom_toTopOf="@+id/Logout"
+        app:layout_constraintBottom_toTopOf="@+id/logOut"
         app:layout_constraintRight_toLeftOf="@+id/textView6"
         android:layout_marginRight="14dp"
         android:layout_marginTop="8dp"

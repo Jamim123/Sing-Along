@@ -11,6 +11,8 @@ public class SongAction {
         playlist.add(song);
     }
 
+
+
     public int getSize() {
         return playlist.size();
     }
@@ -62,6 +64,10 @@ public class SongAction {
     public String getback()
     {
         return playlist.get(position).getBackURL();
+    }
+
+    public void clear() {
+        playlist.clear();
     }
 }
 
