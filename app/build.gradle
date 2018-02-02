@@ -63,6 +63,7 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.19.0'
     compile 'com.google.firebase:firebase-crash:11.8.0'
     compile 'com.google.firebase:firebase-auth:11.8.0'
+    compile 'com.weiwangcn.betterspinner:library-material:1.1.0'
     compile 'com.google.firebase:firebase-database:11.8.0'
     compile 'com.google.firebase:firebase-messaging:11.8.0'
     compile 'com.firebase:firebase-client-android:2.5.2'

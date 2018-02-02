@@ -1,20 +1,13 @@
 package com.project1.musicapp.singalong;
 
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.TransitionDrawable;
 import android.location.Location;
-import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -37,25 +30,12 @@ import com.deezer.sdk.player.event.OnPlayerStateChangeListener;
 import com.deezer.sdk.player.event.PlayerState;
 import com.deezer.sdk.player.exception.TooManyPlayersExceptions;
 import com.deezer.sdk.player.networkcheck.WifiAndMobileNetworkStateChecker;
-import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Result;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStates;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.TreeMap;
 
@@ -82,7 +62,7 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
     public TreeMap<String, SongAction> data;
     ImageButton playButton, nextButton, previousButton, heartButton, options;
     TextView songName, artistName, album, txtView, showtext, t11;
-    ImageView backgroundAlbumImage;
+    ImageView backgroundAlbumImage,weatherIcon;
     Button m1;
     ImageView heart;
     TextView nextSong;
@@ -123,6 +103,7 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
 
         timeElapsed = findViewById(R.id.songCurrentDurationLabel);
         timeRemaining = findViewById(R.id.songTotalDurationLabel);
+        weatherIcon=findViewById(R.id.weatherIcon);
 
         dialog = new ProgressDialog(this);
         dialog.setTitle("Loading weather and song data...");
@@ -175,35 +156,7 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
         setResult(RESULT_OK, returnIntent);
 
 
-        /*BottomNavigationView bottomNavigationView = (BottomNavigationView)
-                findViewById(R.id.bottom_navigation);
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.usersss:
-                                Intent i = new Intent(Musicplayer.this, Profilepage.class);
-                                startActivity(i);
-
-                            case R.id.languagee:
-                                Intent ii = new Intent(Musicplayer.this, Language.class);
-                                startActivity(ii);
-
-                            case R.id.logoutt:
-                                mAuth.signOut();
-                                LoginManager.getInstance().logOut();
-                                if (mAuth.getCurrentUser() == null) {
-                                    startActivity(new Intent(Musicplayer.this, MainActivity.class));
-                                    finish();
-                                }
-
-
-                        }
-                        return true;
-                    }
-                });*/
 
 
     }
@@ -261,7 +214,7 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
 
 
             //mp = new MediaPlayer();
-            new GetWeatherData(this, t1, weather).execute(url);
+            new GetWeatherData(this, t1, weather,weatherIcon).execute(url);
 
             double x = 22;
 
@@ -285,6 +238,7 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
 
         started = false;
         currentPosition = 0;
+
 
 
         songName.setText(currentSong.getSongName());

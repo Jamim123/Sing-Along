@@ -2,6 +2,7 @@ package com.project1.musicapp.singalong;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -33,12 +34,14 @@ public class GetWeatherData extends AsyncTask<String, Void, String> {
     private TextView textView;
     private Context context;
     private String weather;
+    ImageView image;
     Musicplayer parent;
 
-    public GetWeatherData(Context context, TextView textView, String weather) {
+    public GetWeatherData(Context context, TextView textView, String weather, ImageView image) {
         this.context = context;
         this.weather = weather;
         this.textView = textView;
+        this.image = image;
 
     }
 
@@ -80,7 +83,7 @@ public class GetWeatherData extends AsyncTask<String, Void, String> {
 
             JSONArray jsonarray = topLevel.getJSONArray("weather");
             JSONObject obj = jsonarray.getJSONObject(0);
-            weather = obj.getString("description");
+            weather = obj.getString("main");
 
 
             //weather = String.valueOf(main.getDouble("temp"));//if temp needed
@@ -101,16 +104,36 @@ public class GetWeatherData extends AsyncTask<String, Void, String> {
 
 
     public void onPostExecute(String temp) {
-        if (temp.equals("Haze")
-                || temp.equals("Clear sky")
-                || temp.equals("light rain"))
-        temp = "Haze";
+        //textView.setText(temp);
+        if (temp.equals("Thunderstorm")
+                || temp.equals("Drizzle")
+                || temp.equals("Rain"))
+            temp = "Rainy";
 
-        temp = "Sunny"; //comment this line
+        if (temp.equals("Snow")
+                || temp.equals("Atmosphere"))
+            temp = "Snowy";
+
+        //if(temp.equals("Clear"))
+        //temp.equals("Clear Sky");
+
+        if (temp.equals("Clouds"))
+            temp = "Cloudy";
+
+
+        if (temp.equals(" Additional"))
+            temp = "Windy";
+
+
+        if (temp.equals("Extreme") || temp.equals("Clear")) {
+            temp = "Sunny";
+            image.setImageResource(R.drawable.snowyicon);
+        }
+
 
         parent = (Musicplayer) context;
 
-        weather=temp;
+        weather = temp;
         parent.weather = temp;
 
 
@@ -146,7 +169,8 @@ public class GetWeatherData extends AsyncTask<String, Void, String> {
 
 
     }
-
-
 }
+
+
+
 

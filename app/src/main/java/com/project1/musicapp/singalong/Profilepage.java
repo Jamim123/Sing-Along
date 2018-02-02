@@ -27,11 +27,13 @@ public class Profilepage extends AppCompatActivity {
     Button changeImage;
     Button saveChanges;
     Button logout;
+    String bgImage;
 
     ImageView propic;
 
     EditText userName;
     TextView email;
+    String usernameText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +56,11 @@ public class Profilepage extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference().child("users").child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String usernameText = dataSnapshot.child("username").getValue(String.class);
-                userName.setText(usernameText);
+                usernameText = dataSnapshot.child("username").getValue(String.class);
 
-                String bgImage = dataSnapshot.child("propic").getValue(String.class);
+                    userName.setText(usernameText);
+
+                bgImage = dataSnapshot.child("propic").getValue(String.class);
                 Resources res = getResources();
                 int resID = res.getIdentifier(bgImage , "drawable", getPackageName());
                 propic.setImageResource(resID);
