@@ -138,7 +138,7 @@ public class Language extends AppCompatActivity implements GoogleApiClient.Conne
                     }
                     if(checkedId==R.id.radioButton3)
                     {
-                        eng="Does't matter";
+                        eng="Does not matter";
                         Intent ind=new Intent(Language.this,Musicplayer.class);
                         ind.putExtra("nm",eng);
                         startActivity(ind);

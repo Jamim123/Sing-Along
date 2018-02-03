@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +25,11 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.project1.musicapp.singalong.MESSAGE";
@@ -36,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private LoginButton loginButton;
     private FirebaseAuth auth;
     private TextView t11;
+    DatabaseReference dref;
+    String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 handleFacebookAccessToken(loginResult.getAccessToken());
+
             }
 
             @Override
@@ -158,6 +165,21 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
 
                         } else {
+                            dref = FirebaseDatabase.getInstance().getReference();
+                            uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            dref.child("users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if(!dataSnapshot.child("username").exists()) dref.child("users").child(uid).child("username").setValue("Facebook User");
+                                    if(!dataSnapshot.child("propic").exists()) dref.child("users").child(uid).child("propic").setValue("g2");
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
                             Intent intent = new Intent(MainActivity.this, Language.class);
                             startActivity(intent);
                             finish();

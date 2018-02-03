@@ -2,14 +2,10 @@ package com.project1.musicapp.singalong;
 
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
-
-import java.util.Random;
-
-import static java.lang.Thread.sleep;
 
 
 public class Splashscreen extends AppCompatActivity {
@@ -22,9 +18,15 @@ public class Splashscreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splashscreen);
 
+       Typeface tf= Typeface.createFromAsset(getAssets(),"OpenSans-Bold.ttf");
+
+
 
 
         TextView slogan = (TextView) findViewById(R.id.appslogan);
+       // TextView name=findViewById(R.id.name);
+        //name.setTypeface(tf);
+
         slogan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

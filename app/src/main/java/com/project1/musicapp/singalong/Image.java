@@ -3,7 +3,6 @@ package com.project1.musicapp.singalong;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,7 +28,10 @@ public class Image extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                FirebaseDatabase.getInstance().getReference().child("users").child(uid).child("propic").setValue(view.getId());
+                int ID=view.getId();
+                String imageName=getResources().getResourceEntryName(ID);
+
+                FirebaseDatabase.getInstance().getReference().child("users").child(uid).child("propic").setValue(imageName);
                 finish();
             }
         };

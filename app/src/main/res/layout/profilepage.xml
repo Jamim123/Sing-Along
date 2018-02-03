@@ -36,7 +36,8 @@
             android:layout_alignBottom="@+id/circleBackground"
             android:layout_alignEnd="@+id/circleBackground"
             android:layout_gravity="center"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:contentDescription="TODO"
             app:srcCompat="@drawable/bitstrip_cool"
             tools:layout_editor_absoluteX="141dp"
@@ -114,6 +115,7 @@
             android:paddingTop="7dp"
             android:text="jdnkkk"
             android:textColor="#ffffff"
+            android:textSize="16sp"
             tools:layout_editor_absoluteX="103dp"
             tools:layout_editor_absoluteY="373dp" />
     </LinearLayout>

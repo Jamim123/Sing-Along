@@ -108,26 +108,38 @@ public class GetWeatherData extends AsyncTask<String, Void, String> {
         if (temp.equals("Thunderstorm")
                 || temp.equals("Drizzle")
                 || temp.equals("Rain"))
+        {
             temp = "Rainy";
+            image.setImageResource(R.drawable.rain);
+        }
 
         if (temp.equals("Snow")
                 || temp.equals("Atmosphere"))
+        {
             temp = "Snowy";
+            image.setImageResource(R.drawable.snowflake);
+        }
 
         //if(temp.equals("Clear"))
         //temp.equals("Clear Sky");
 
         if (temp.equals("Clouds"))
-            temp = "Cloudy";
+        {
+            temp ="Cloudy";
+            image.setImageResource(R.drawable.cloud);
+        }
 
 
         if (temp.equals(" Additional"))
+        {
             temp = "Windy";
+            image.setImageResource(R.drawable.wind);
+        }
 
 
         if (temp.equals("Extreme") || temp.equals("Clear")) {
             temp = "Sunny";
-            image.setImageResource(R.drawable.snowyicon);
+            image.setImageResource(R.drawable.sun);
         }
 
 
@@ -137,7 +149,7 @@ public class GetWeatherData extends AsyncTask<String, Void, String> {
         parent.weather = temp;
 
 
-        textView.setText("Current Weather:" + temp);
+        textView.setText("Current Weather : " + temp);
 
 
         parent.data = new TreeMap<String, SongAction>();

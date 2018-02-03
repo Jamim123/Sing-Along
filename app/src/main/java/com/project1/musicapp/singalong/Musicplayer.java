@@ -4,6 +4,7 @@ package com.project1.musicapp.singalong;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.graphics.drawable.TransitionDrawable;
 import android.location.Location;
 import android.media.MediaPlayer;
@@ -21,7 +22,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.request.event.DeezerError;
 import com.deezer.sdk.player.TrackPlayer;
@@ -82,6 +82,7 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
     View.OnClickListener play;
     View.OnClickListener pause;
     Thread timeShower;
+    Typeface tf,tff;
 
     TextView timeElapsed, timeRemaining;
 
@@ -139,8 +140,22 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
         songName = (TextView) findViewById(R.id.song);
         artistName = (TextView) findViewById(R.id.artist);
         album = (TextView) findViewById(R.id.album);
-        backgroundAlbumImage = (ImageView) findViewById(R.id.backgroundImage);
+        //backgroundAlbumImage = (ImageView) findViewById(R.id.backgroundImage);
         nextSong = (TextView) findViewById(R.id.nextSongTitle);
+
+        tf= Typeface.createFromAsset(getAssets(),"OpenSans-Bold.ttf");
+        songName.setTypeface(tf);
+
+
+        tff= Typeface.createFromAsset(getAssets(),"OpenSans-Regular.ttf");
+        nextSong.setTypeface(tff);
+        artistName.setTypeface(tff);
+        album.setTypeface(tff);
+        t1.setTypeface(tff);
+
+
+
+
 
 
         options.setOnClickListener(new View.OnClickListener() {
@@ -254,7 +269,7 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
         nextSong.setEllipsize(TextUtils.TruncateAt.MARQUEE);
         nextSong.setSingleLine(true);
 
-        Glide.with(Musicplayer.this).load(currentSong.getback()).into(backgroundAlbumImage);
+        //Glide.with(Musicplayer.this).load(currentSong.getback()).into(backgroundAlbumImage);
 
         //int dataa= Integer.parseInt(currentSong.getback());
         //backgroundAlbumImage.setImageResource(dataa);
@@ -315,22 +330,27 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
             @Override
             public void onPlayerStateChange(PlayerState playerState, long l) {
                 if (playerState.equals(PlayerState.WAITING_FOR_DATA)) {
+                    //Toast.makeText(Musicplayer.this, "waiting now...", Toast.LENGTH_LONG).show();
                     playButton.setOnClickListener(play);
                     playButton.setImageResource(R.drawable.img_btn_play);
                 } else if (playerState.equals(PlayerState.STOPPED)) {
+                    //Toast.makeText(Musicplayer.this, "stopping now...", Toast.LENGTH_LONG).show();
                     playButton.setOnClickListener(play);
                     playButton.setImageResource(R.drawable.img_btn_play);
                 } else if (playerState.equals(PlayerState.INITIALIZING)) {
+                    //Toast.makeText(Musicplayer.this, "initializing now...", Toast.LENGTH_LONG).show();
                     playButton.setOnClickListener(play);
                     playButton.setImageResource(R.drawable.img_btn_play);
                 } else if (playerState.equals(PlayerState.PAUSED)) {
+                    //Toast.makeText(Musicplayer.this, "pausing now...", Toast.LENGTH_LONG).show();
                     playButton.setOnClickListener(play);
                     playButton.setImageResource(R.drawable.img_btn_play);
                 } else if (playerState.equals(PlayerState.READY)) {
+                    //Toast.makeText(Musicplayer.this, "ready now...", Toast.LENGTH_LONG).show();
                     playButton.setOnClickListener(play);
                     playButton.setImageResource(R.drawable.img_btn_play);
                 } else if (playerState.equals(PlayerState.PLAYBACK_COMPLETED)) {
-                    Toast.makeText(Musicplayer.this, "Playback Stopped", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(Musicplayer.this, "Playback Stopped", Toast.LENGTH_LONG).show();
 
                     playButton.setImageResource(R.drawable.img_btn_play);
 
@@ -470,7 +490,7 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(Musicplayer.this, String.valueOf(player.getTrackDuration()), Toast.LENGTH_LONG).show();
+                //Toast.makeText(Musicplayer.this, String.valueOf(player.getTrackDuration()), Toast.LENGTH_LONG).show();
             }
         });
         songSeekBar.setMax((int) soundTotal);

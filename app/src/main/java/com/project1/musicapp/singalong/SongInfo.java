@@ -5,19 +5,19 @@ import java.util.TreeMap;
 
 public class SongInfo {
     public static void collectSongs(TreeMap<String, SongAction> data) {
-        SongAction sunny = new SongAction();
-        data.put("Sunny", sunny);
+        SongAction Sunny = new SongAction();
+        data.put("Sunny", Sunny);
 
-        SongAction rainy = new SongAction();
-        data.put("Rainy", rainy);
+        SongAction Rainy = new SongAction();
+        data.put("Rainy", Rainy);
 
-        SongAction clouds= new SongAction();
-        data.put("Clouds", clouds);
+        SongAction Cloudy= new SongAction();
+        data.put("Cloudy", Cloudy);
 
-        SongAction Haze = new SongAction();
-        data.put("Haze", Haze);
+        SongAction Windy = new SongAction();
+        data.put("Windy", Windy);
 
-        SongAction nightsky = new SongAction();
-        data.put("Nightsky", nightsky);
+        SongAction Snowy = new SongAction();
+        data.put("Snowy", Snowy);
     }
 }

@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
@@ -33,6 +34,15 @@ public class Settings extends AppCompatActivity  {
 
 
         tt1=(TextView) findViewById(R.id.lang);
+
+        tt1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i=new Intent(Settings.this,Language.class);
+                startActivity(i);
+            }
+        });
+
         tt2=(TextView) findViewById(R.id.userinfo);
 
         tt3=(TextView) findViewById(R.id.rateapp);
@@ -41,6 +51,7 @@ public class Settings extends AppCompatActivity  {
             @Override
             public void onClick(View view) {
                     FirebaseAuth.getInstance().signOut();
+                    LoginManager.getInstance().logOut();
                     startActivity(new Intent(Settings.this, MainActivity.class));
                     finishAffinity();
                 }

@@ -78,6 +78,8 @@ public class Profilepage extends AppCompatActivity {
                String usernameText = userName.getText().toString();
                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                FirebaseDatabase.getInstance().getReference().child("users").child(uid).child("username").setValue(usernameText);
+               Intent intent=new Intent(Profilepage.this,Settings.class);
+               startActivity(intent);
            }
        });
 
@@ -89,11 +91,5 @@ public class Profilepage extends AppCompatActivity {
             }
         });
 
-        saveChanges.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
 }
