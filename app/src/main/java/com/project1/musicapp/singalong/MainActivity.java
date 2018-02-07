@@ -93,9 +93,20 @@ public class MainActivity extends AppCompatActivity {
         //progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         forgotPass = (Button) findViewById(R.id.forgotPasswordButton);
+
+
+        forgotPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), "Currently we are working on password reset,so this functionality is not available now.Sorry for the inconvenience.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         forgotPass.setVisibility(View.VISIBLE);
         t11 = (TextView) findViewById(R.id.textView9);
         forgotPass.setBackgroundColor(Color.TRANSPARENT);
+
+
 
 
         login.setOnClickListener(new View.OnClickListener() {
@@ -137,13 +148,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        forgotPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // call(view);
-            }
-        });
 
     }
 
