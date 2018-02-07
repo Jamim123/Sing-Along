@@ -145,6 +145,7 @@ public class GetWeatherData extends AsyncTask<String, Void, String> {
 
         parent = (Musicplayer) context;
 
+
         weather = temp;
         parent.weather = temp;
 
