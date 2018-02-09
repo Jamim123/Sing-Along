@@ -158,11 +158,13 @@ public class GetWeatherData extends AsyncTask<String, Void, String> {
         parent.currentSong = parent.data.get(weather);
 
         DatabaseReference dref = FirebaseDatabase.getInstance().getReference();
-        dref.child("Weather").child(weather).child("Songs").child(parent.lang).addValueEventListener(new ValueEventListener() {
+        dref.child("Weather").child(weather).child("Songs").child(parent.lang).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 parent.currentSong.clear();
+                parent.keyList.clear();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    parent.keyList.add(child.getKey());
                     SongSkeleton song = child.child("songData").getValue(SongSkeleton.class);
                     parent.currentSong.addSong(song);
                 }

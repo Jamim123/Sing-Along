@@ -34,9 +34,13 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 
@@ -73,6 +77,7 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
     DatabaseReference dref;
 
     SongAction currentSong;
+    ArrayList<String> keyList = new ArrayList();
     TrackPlayer player;
     String lang;
 
@@ -118,15 +123,6 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
 
         t1 = (TextView) findViewById(R.id.weather);
         heartButton = (ImageButton) findViewById(R.id.btnLove);
-
-        heartButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((TransitionDrawable) heartButton.getDrawable()).startTransition(2000);
-
-
-            }
-        });
 
 
         googleApiClient = new GoogleApiClient.Builder(this, this, (GoogleApiClient.OnConnectionFailedListener) this).addApi(LocationServices.API).build();
@@ -254,6 +250,58 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
         started = false;
         currentPosition = 0;
 
+        DatabaseReference dref = FirebaseDatabase.getInstance().getReference();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        final DatabaseReference myLike = dref.child("Weather").child(weather).child("Songs").child(lang).child(keyList.get(currentSong.position)).child("likes").child(uid);
+        myLike.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Boolean currentState = dataSnapshot.getValue(Boolean.class);
+                if(currentState==null || currentState.equals(false)) {
+                    ((TransitionDrawable) heartButton.getDrawable()).resetTransition();
+                } else {
+                    ((TransitionDrawable) heartButton.getDrawable()).startTransition(1000); //give it a  try
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        heartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                DatabaseReference dref = FirebaseDatabase.getInstance().getReference();
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                final DatabaseReference myLike = dref.child("Weather").child(weather).child("Songs").child(lang).child(keyList.get(currentSong.position)).child("likes").child(uid);
+                myLike.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Boolean currentState = dataSnapshot.getValue(Boolean.class);
+                        if(currentState==null || currentState.equals(false)) {
+                            myLike.setValue(true);
+                            ((TransitionDrawable) heartButton.getDrawable()).startTransition(1000);
+                        } else {
+                            myLike.setValue(false);
+                            ((TransitionDrawable) heartButton.getDrawable()).resetTransition(); //give it a  try
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
+
+            }
+        });
 
 
         songName.setText(currentSong.getSongName());
