@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/SINGALONG3.iml" filepath="$PROJECT_DIR$/SINGALONG3.iml" />
       <module fileurl="file://C:\Users\Tanmoy Krishna Das\Desktop\Sing-Along\Sing-Along\SINGALONG3.iml" filepath="C:\Users\Tanmoy Krishna Das\Desktop\Sing-Along\Sing-Along\SINGALONG3.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Sing-Along.iml" filepath="$PROJECT_DIR$/Sing-Along.iml" />
       <module fileurl="file://C:\Users\jamim\AndroidStudioProjects\SINGALONG3\Sing-Along.iml" filepath="C:\Users\jamim\AndroidStudioProjects\SINGALONG3\Sing-Along.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/deezer-sdk-0.11.2/deezer-sdk-0.11.2.iml" filepath="$PROJECT_DIR$/deezer-sdk-0.11.2/deezer-sdk-0.11.2.iml" />

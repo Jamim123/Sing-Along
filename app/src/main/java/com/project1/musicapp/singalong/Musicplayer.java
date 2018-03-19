@@ -59,7 +59,7 @@ public class Musicplayer extends AppCompatActivity implements Runnable, GoogleAp
     private long currentPosition = 0;
     public MediaPlayer mp;
     public SeekBar songSeekBar;
-    String applicationID = "260462";
+    String applicationID = "273502";
     protected DeezerConnect deezerConnect = null;
     public Thread soundThread;
     public String weather = "rainy";

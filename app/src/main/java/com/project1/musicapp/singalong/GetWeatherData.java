@@ -114,17 +114,17 @@ public class GetWeatherData extends AsyncTask<String, Void, String> {
         }
 
         if (temp.equals("Snow")
-                || temp.equals("Atmosphere"))
+                )
         {
             temp = "Snowy";
             image.setImageResource(R.drawable.snowflake);
         }
 
-        //if(temp.equals("Clear"))
-        //temp.equals("Clear Sky");
 
-        if (temp.equals("Clouds"))
+        if (temp.equals("Clouds")
+                || temp.equals("Haze"))
         {
+            //textView.setText("hudai");
             temp ="Cloudy";
             image.setImageResource(R.drawable.cloud);
         }
